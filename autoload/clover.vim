@@ -6,17 +6,9 @@ let g:autoloaded_clover = 1
 let s:save_cpo = &cpoptions
 set cpoptions&vim
 
-if !hlexists('CloverCovered')
-  highlight def cloverCovered guifg='Green' ctermfg=Green
-endif
-
-if !hlexists('CloverUncovered')
-  highlight def cloverUncovered guifg='Red' ctermfg=Red
-endif
-
-if !hlexists('CloverIgnored')
-  highlight def CloverIgnored guifg='Gray' ctermfg=Gray
-endif
+highlight default CloverCovered guifg=Green ctermfg=Green
+highlight default CloverUncovered guifg=Red ctermfg=Red
+highlight default CloverIgnored guifg=Gray ctermfg=Gray
 
 function! clover#Up() abort
   let l:tempname = tempname()
