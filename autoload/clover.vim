@@ -25,7 +25,16 @@ function! clover#Up() abort
   let l:job_opts.cwd = expand('%:h')
   let l:job_opts.on_exit = function('s:OnJobExit', [l:tempname])
 
-  let l:job = jobstart(['go', 'test', '-coverprofile', l:tempname], l:job_opts)
+  let l:cmd_args = ['-coverprofile', l:tempname]
+
+  " Integration with vim-test/vim-test
+  if g:loaded_test
+    let l:cmd_args = test#base#options('go#gotest', l:cmd_args)
+    let l:cmd_args = test#base#options('go#gotest', l:cmd_args, 'suite')
+  endif
+
+  let l:cmd = ['go', 'test'] + l:cmd_args
+  let l:job = jobstart(l:cmd, l:job_opts)
 endfunction
 
 function! s:OnJobExit(coverfile, job_id, data, event) abort
