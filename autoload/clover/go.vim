@@ -60,13 +60,13 @@ function! s:GetMatchesForLine(cov) abort
 
   let l:matches = [{'group': l:group, 'pos': l:pos}]
 
-  let l:current_line = a:cov.start_line
+  let l:current_line = a:cov.start_line + 1
   while l:current_line < a:cov.end_line
-    let l:current_line += 1
     call add(l:matches, {'group': l:group, 'pos': [l:current_line]})
+    let l:current_line += 1
   endwhile
 
-  call add(l:matches, {'group': l:group, 'pos': [a:cov.end_line, a:cov.end_col-1]})
+  call add(l:matches, {'group': l:group, 'pos': [[a:cov.end_line, 1, a:cov.end_col-1]]})
 
   return l:matches
 endfunction
