@@ -24,13 +24,7 @@ function! s:OnJobExit(coverfile, job_id, data, event) abort
 
   let b:toggled = 1
 
-  let l:matches = []
-
-  let l:count = 1
-  while l:count <= line('$')
-    call add(l:matches, {'group': 'CloverIgnored', 'pos': [l:count]})
-    let l:count += 1
-  endwhile
+  lua require('clover').highlight({})
 
   let l:filename = expand('%:t')
 
@@ -42,22 +36,15 @@ function! s:OnJobExit(coverfile, job_id, data, event) abort
       continue
     endif
 
-    call add(l:matches, s:GetMatchForLine(cov))
-  endfor
-
-  augroup clover_cleanup
-    autocmd! * <buffer>
-    autocmd BufModifiedSet,BufWinLeave <buffer> call clover#Down()
-  augroup end
-
-  for l:m in l:matches
-    call matchaddpos(l:m.group, l:m.pos)
+    for l:match in s:GetMatchesForLine(cov)
+      call matchaddpos(l:match.group, l:match.pos)
+    endfor
   endfor
 
   call delete(a:coverfile)
 endfunction
 
-function! s:GetMatchForLine(cov) abort
+function! s:GetMatchesForLine(cov) abort
   let l:group = 'CloverCovered'
   if a:cov.count == 0
     let l:group = 'CloverUncovered'
@@ -65,21 +52,23 @@ function! s:GetMatchForLine(cov) abort
 
   if a:cov.start_line == a:cov.end_line
     let l:pos = [[a:cov.start_line, a:cov.start_col, a:cov.end_col - a:cov.start_col]]
-    return {'group': l:group, 'pos': l:pos}
+    return [{'group': l:group, 'pos': l:pos}]
   endif
 
-  let l:end_position = strwidth(getline(a:cov.start_line)) - a:cov.start_col + 1
-  let l:positions = [[a:cov.start_line, a:cov.start_col, l:end_position]]
+  let l:length = strwidth(getline(a:cov.start_line)) - a:cov.start_col + 1
+  let l:pos = [[a:cov.start_line, a:cov.start_col, l:length]]
+
+  let l:matches = [{'group': l:group, 'pos': l:pos}]
 
   let l:current_line = a:cov.start_line
   while l:current_line < a:cov.end_line
     let l:current_line += 1
-    call add(l:positions, l:current_line)
+    call add(l:matches, {'group': l:group, 'pos': [l:current_line]})
   endwhile
 
-  call add(l:positions, [a:cov.end_line, a:cov.end_col-1])
+  call add(l:matches, {'group': l:group, 'pos': [a:cov.end_line, a:cov.end_col-1]})
 
-  return {'group': l:group, 'pos': l:positions}
+  return l:matches
 endfunction
 
 function! s:ParseLine(line) abort
