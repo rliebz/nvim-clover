@@ -41,6 +41,8 @@ function! s:OnJobExit(coverfile, job_id, data, event) abort
     endfor
   endfor
 
+  call matchadd('Whitespace', '\s\+', 20)
+
   call delete(a:coverfile)
 endfunction
 
