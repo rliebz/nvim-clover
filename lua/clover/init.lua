@@ -1,3 +1,8 @@
+--- line_length returns the number of display cells a line occupies.
+local function line_length(line_number)
+	return vim.fn.strwidth(vim.fn.getline(line_number))
+end
+
 --- highlight produces highlights in a document based on matches passed. This
 -- will typically be returned from calling get_matches.
 --
@@ -63,11 +68,6 @@ local function get_matches(start_line, start_col, end_line, end_col, covered)
 	table.insert(matches, { group = group, pos = last_pos })
 
 	return matches
-end
-
---- line_length returns the number of display cells a line occupies.
-local function line_length(line_number)
-	return vim.fn.strwidth(vim.fn.getline(line_number))
 end
 
 return {
