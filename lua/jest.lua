@@ -1,5 +1,9 @@
 local highlight = require("clover").highlight
 
+local function length(line_number)
+	return vim.fn.strwidth(vim.fn.getline(line_number))
+end
+
 local function on_exit(exit_code, tempdir)
 	if exit_code ~= 0 then
 		vim.api.nvim_err_writeln("failed to get coverage")
@@ -22,17 +26,16 @@ local function on_exit(exit_code, tempdir)
 
 		local cov = statement_map[id]
 
-		local length = vim.fn.strwidth(vim.fn.getline(cov.start.line)) - cov.start.column + 1
-		local pos = { { cov.start.line, cov.start.column, length } }
-
-		table.insert(matches, { group = group, pos = pos })
+		local first_length = length(cov.start.line) - cov.start.column + 1
+		local first_pos = { { cov.start.line, cov.start.column, first_length } }
+		table.insert(matches, { group = group, pos = first_pos })
 
 		for line = cov.start.line + 1, cov["end"].line - 1, 1 do
 			table.insert(matches, { group = group, pos = { line } })
 		end
 
-		local pos = { { cov["end"].line, 1, cov["end"].column } }
-		table.insert(matches, { group = group, pos = pos })
+		local last_pos = { { cov["end"].line, 1, cov["end"].column or length(cov["end"].line) } }
+		table.insert(matches, { group = group, pos = last_pos })
 	end
 
 	highlight(matches)
