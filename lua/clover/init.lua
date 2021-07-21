@@ -41,7 +41,7 @@ local function get_matches(start_line, start_col, end_line, end_col, covered)
 	end
 
 	if not end_col or end_col == vim.NIL then
-		end_col = line_length(cov["end"].line)
+		end_col = line_length(end_line)
 	end
 
 	if start_line == end_line then
