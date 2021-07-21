@@ -19,17 +19,19 @@ function! clover#Up() abort
   else
     echoerr 'Unsupported file type: ' . &filetype
   endif
+
+  let b:toggled = 1
 endfunction
 
 " Clear all coverage highlights.
 function! clover#Down() abort
   call clearmatches()
 
-  let b:toggled = 0
-
   augroup clover_cleanup
     autocmd! * <buffer>
   augroup end
+
+  let b:toggled = 0
 endfunction
 
 function! clover#Toggle() abort
