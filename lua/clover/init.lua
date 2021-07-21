@@ -14,7 +14,7 @@ local function highlight(matches)
 	vim.cmd([[
 	augroup clover_cleanup
 		autocmd! * <buffer>
-		autocmd BufLeave <buffer> ++once call clover#Down()
+		autocmd BufWinLeave <buffer> call clover#Down()
 	augroup end
 	]])
 
