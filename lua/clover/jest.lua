@@ -21,9 +21,9 @@ local function on_exit(exit_code, tempdir)
 
 		local statement_matches = get_matches(
 			cov.start.line,
-			cov.start.column + 1,
+			type(cov.start.column) == "number" and cov.start.column + 1 or nil,
 			cov["end"].line,
-			cov["end"].column + 1,
+			type(cov["end"].column) == "number" and cov["end"].column + 1 or nil,
 			count > 0
 		)
 

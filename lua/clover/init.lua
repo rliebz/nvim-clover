@@ -57,13 +57,8 @@ local function get_matches(start_line, start_col, end_line, end_col, covered)
 		}
 	end
 
-	if not start_col or start_col == vim.NIL then
-		start_col = 1
-	end
-
-	if not end_col or end_col == vim.NIL then
-		end_col = line_length(end_line)
-	end
+	start_col = start_col or 1
+	end_col = end_col or line_length(end_line)
 
 	if start_line == end_line then
 		local pos = { { start_line, start_col, end_col - start_col } }
