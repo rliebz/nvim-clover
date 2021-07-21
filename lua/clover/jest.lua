@@ -4,7 +4,7 @@ local get_matches = require("clover").get_matches
 
 local function on_exit(exit_code, tempdir)
 	if exit_code ~= 0 then
-		vim.api.nvim_err_writeln("failed to get coverage")
+		vim.api.nvim_err_writeln("Failed to get coverage")
 		return
 	end
 
@@ -12,8 +12,14 @@ local function on_exit(exit_code, tempdir)
 
 	local filepath = vim.fn.expand("%:p")
 
-	local statement_counts = json[filepath].s
-	local statement_map = json[filepath].statementMap
+	local file_report = json[filepath]
+	if not file_report then
+		vim.api.nvim_err_writeln("Coverage not available for file: " .. filepath)
+		return
+	end
+
+	local statement_counts = file_report.s
+	local statement_map = file_report.statementMap
 
 	local matches = {}
 	for id, count in pairs(statement_counts) do

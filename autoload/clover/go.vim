@@ -24,7 +24,7 @@ function! s:OnJobExit(coverfile, job_id, exit_code, event) abort
   endif
 
   if !filereadable(a:coverfile)
-    echoerr 'Failed to read read coverfile ' . a:coverfile
+    echoerr 'Failed to read read coverfile: ' . a:coverfile
     return
   endif
 
