@@ -17,8 +17,14 @@ function! clover#go#Up() abort
   let l:job = jobstart(l:cmd, l:job_opts)
 endfunction
 
-function! s:OnJobExit(coverfile, job_id, data, event) abort
+function! s:OnJobExit(coverfile, job_id, exit_code, event) abort
+  if a:exit_code != 0
+    echoerr 'Failed to get coverage'
+    return
+  endif
+
   if !filereadable(a:coverfile)
+    echoerr 'Failed to read read coverfile ' . a:coverfile
     return
   endif
 
@@ -40,8 +46,6 @@ function! s:OnJobExit(coverfile, job_id, data, event) abort
       call matchaddpos(l:match.group, l:match.pos)
     endfor
   endfor
-
-  call matchadd('Whitespace', '\s\+', 20)
 
   call delete(a:coverfile)
 endfunction

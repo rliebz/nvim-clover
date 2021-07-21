@@ -11,6 +11,7 @@ local function highlight(matches)
 	augroup end
 	]])
 
+	vim.fn.matchadd("Whitespace", [[\s\+]], 20)
 	for line = 1, vim.fn.line("$"), 1 do
 		vim.fn.matchaddpos("CloverIgnored", { line })
 	end
