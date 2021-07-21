@@ -15,7 +15,7 @@ function! clover#Up() abort
     call clover#go#Up()
   elseif index(['javascript', 'javascriptreact', 'typescript', 'typescriptreact'], &filetype != -1)
     " TODO: Jest is not a safe assumption
-    lua require('jest').jest_up()
+    lua require('clover.jest').jest_up()
   else
     echoerr 'Unsupported file type: ' . &filetype
   endif
