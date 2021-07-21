@@ -1,8 +1,6 @@
 local highlight = require("clover").highlight
-
-local function length(line_number)
-	return vim.fn.strwidth(vim.fn.getline(line_number))
-end
+local line_length = require("clover").line_length
+local get_matches = require("clover").get_matches
 
 local function on_exit(exit_code, tempdir)
 	if exit_code ~= 0 then
@@ -19,23 +17,19 @@ local function on_exit(exit_code, tempdir)
 
 	local matches = {}
 	for id, count in pairs(statement_counts) do
-		local group = "CloverUncovered"
-		if count > 0 then
-			group = "CloverCovered"
-		end
-
 		local cov = statement_map[id]
 
-		local first_length = length(cov.start.line) - cov.start.column + 1
-		local first_pos = { { cov.start.line, cov.start.column, first_length } }
-		table.insert(matches, { group = group, pos = first_pos })
+		local statement_matches = get_matches(
+			cov.start.line,
+			cov.start.column,
+			cov["end"].line,
+			cov["end"].column,
+			count > 0
+		)
 
-		for line = cov.start.line + 1, cov["end"].line - 1, 1 do
-			table.insert(matches, { group = group, pos = { line } })
+		for _, match in ipairs(statement_matches) do
+			table.insert(matches, match)
 		end
-
-		local last_pos = { { cov["end"].line, 1, cov["end"].column or length(cov["end"].line) } }
-		table.insert(matches, { group = group, pos = last_pos })
 	end
 
 	highlight(matches)
