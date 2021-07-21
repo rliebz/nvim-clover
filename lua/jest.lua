@@ -51,6 +51,8 @@ local function jest_up()
 		"--coverage",
 		"--coverageThreshold",
 		"{}",
+		"--coverage-reporters",
+		"json",
 		"--collect-coverage-from",
 		filename,
 		"--coverage-directory",
