@@ -49,6 +49,8 @@ local function jest_up()
 		"npx",
 		"jest",
 		"--coverage",
+		"--coverageThreshold",
+		"{}",
 		"--collect-coverage-from",
 		filename,
 		"--coverage-directory",
