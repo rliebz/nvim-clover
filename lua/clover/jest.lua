@@ -27,9 +27,11 @@ local function on_exit(exit_code, tempdir)
 
 		local statement_matches = get_matches(
 			cov.start.line,
+			-- Start column is zero-based
 			type(cov.start.column) == "number" and cov.start.column + 1 or nil,
 			cov["end"].line,
-			type(cov["end"].column) == "number" and cov["end"].column + 1 or nil,
+			-- End column is also zero based, but non-inclusive
+			type(cov["end"].column) == "number" and cov["end"].column or nil,
 			count > 0
 		)
 

@@ -31,7 +31,7 @@ local function highlight(matches)
 end
 
 --- get_matches returns a list of matches suitable for matchaddpos. All lines
--- and columns provided must be 1-indexed.
+-- and columns provided must be 1-indexed, and the values must be inclusive.
 --
 -- @param start_line the first line to highlight
 -- @param start_col the optional column of the first line to highlight
@@ -61,7 +61,7 @@ local function get_matches(start_line, start_col, end_line, end_col, covered)
 	end_col = end_col or line_length(end_line)
 
 	if start_line == end_line then
-		local pos = { { start_line, start_col, end_col - start_col } }
+		local pos = { { start_line, start_col, end_col - start_col + 1 } }
 		return { new_match(pos) }
 	end
 
@@ -75,7 +75,7 @@ local function get_matches(start_line, start_col, end_line, end_col, covered)
 		table.insert(matches, new_match({ line }))
 	end
 
-	local last_pos = { { end_line, 1, end_col - 1 } }
+	local last_pos = { { end_line, 1, end_col } }
 	table.insert(matches, new_match(last_pos))
 
 	return matches
