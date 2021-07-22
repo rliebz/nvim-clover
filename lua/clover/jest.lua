@@ -1,5 +1,4 @@
 local highlight = require("clover").highlight
-local line_length = require("clover").line_length
 local get_matches = require("clover").get_matches
 
 local function on_exit(exit_code, tempdir)
