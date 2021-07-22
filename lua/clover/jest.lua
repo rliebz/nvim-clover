@@ -44,7 +44,7 @@ local function on_exit(exit_code, tempdir)
 	vim.fn.delete(tempdir, "rf")
 end
 
-local function jest_up()
+local function up()
 	local filename = vim.fn.expand("%")
 
 	local tempdir = vim.fn.tempname()
@@ -72,5 +72,5 @@ local function jest_up()
 end
 
 return {
-	jest_up = jest_up,
+	up = up,
 }
