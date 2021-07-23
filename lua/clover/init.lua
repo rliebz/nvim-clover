@@ -30,16 +30,11 @@ local function line_length(line_number)
 	return vim.fn.strwidth(vim.fn.getline(line_number))
 end
 
---- get_matches returns a list of matches suitable for matchaddpos. All lines
--- and columns provided must be 1-indexed, and the values must be inclusive.
+-- match_info returns a group and priority suitable for matchaddpos.
 --
--- @param start_line the first line to highlight
--- @param start_col the optional column of the first line to highlight
--- @param end_line the last line to highlight
--- @param end_col the optional column of the last line to highlight
--- @param covered whether the line is covered
--- @return an array of tables each with a group, pos, and priority
-local function get_matches(start_line, start_col, end_line, end_col, covered)
+-- @param covered whether the code is covered by tests
+-- @return a table with group and priority
+local function match_info(covered)
 	local group = "CloverCovered"
 	local priority = 10
 	if not covered then
@@ -49,10 +44,39 @@ local function get_matches(start_line, start_col, end_line, end_col, covered)
 		priority = 15
 	end
 
+	return {
+		group = group,
+		priority = priority,
+	}
+end
+
+-- get_match_for_line returns a single match suitable for matchaddpos.
+--
+-- @param line_number the line number to highlight
+-- @param covered whether the line is covered by tests
+-- @return a table with group, pos, and priority
+local function get_match_for_line(line_number, covered)
+	local info = match_info(covered)
+	info.pos = { line_number }
+	return info
+end
+
+--- get_matches returns a list of matches suitable for matchaddpos. All lines
+-- and columns provided must be 1-indexed, and the values must be inclusive.
+--
+-- @param start_line the first line to highlight
+-- @param start_col the optional column of the first line to highlight
+-- @param end_line the last line to highlight
+-- @param end_col the optional column of the last line to highlight
+-- @param covered whether the match is covered by tests
+-- @return an array of tables each with a group, pos, and priority
+local function get_matches(start_line, start_col, end_line, end_col, covered)
+	local info = match_info(covered)
+
 	local function new_match(pos)
 		return {
-			group = group,
-			priority = priority,
+			group = info.group,
+			priority = info.priority,
 			pos = pos,
 		}
 	end
@@ -83,5 +107,6 @@ end
 
 return {
 	get_matches = get_matches,
+	get_match_for_line = get_match_for_line,
 	highlight = highlight,
 }

@@ -13,6 +13,8 @@ highlight default CloverIgnored guifg=Gray ctermfg=Gray
 function! clover#Up() abort
   if &filetype ==# 'go'
     lua require('clover.go').up()
+  elseif &filetype ==# 'python'
+    lua require('clover.pytest').up()
   elseif index(['javascript', 'javascriptreact', 'typescript', 'typescriptreact'], &filetype) != -1
     " TODO: Jest is not a safe assumption
     lua require('clover.jest').up()
