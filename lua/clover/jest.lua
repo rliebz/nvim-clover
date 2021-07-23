@@ -46,7 +46,6 @@ end
 
 local function up()
 	local filename = vim.fn.expand("%")
-
 	local tempdir = vim.fn.tempname()
 
 	local cmd = {
@@ -63,12 +62,12 @@ local function up()
 		tempdir,
 	}
 	local job_opts = {
-		on_exit = function(job_id, exit_code, event_type)
+		on_exit = function(_, exit_code, _)
 			on_exit(exit_code, tempdir)
 		end,
 	}
 
-	local job = vim.fn.jobstart(cmd, job_opts)
+	vim.fn.jobstart(cmd, job_opts)
 end
 
 return {
