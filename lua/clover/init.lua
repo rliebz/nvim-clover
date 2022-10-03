@@ -4,8 +4,9 @@
 -- @param matches an array of matches
 -- @param matches.group the appropriate highlight group
 -- @param matches.pos the positions as documented in matchaddpos
+-- @param window_id the ID of the window to highlight
 -- @see get_matches
-local function highlight(matches)
+local function highlight(matches, window_id)
 	vim.cmd([[
 	augroup clover_cleanup
 		autocmd! * <buffer>
@@ -13,15 +14,15 @@ local function highlight(matches)
 	augroup end
 	]])
 
-	vim.fn.clearmatches()
-	vim.fn.matchadd("Whitespace", [[\s\+]], 20)
+	vim.fn.clearmatches(window_id)
+	vim.fn.matchadd("Whitespace", [[\s\+]], 20, -1, { window = window_id })
 
 	for line = 1, vim.fn.line("$"), 1 do
-		vim.fn.matchaddpos("CloverIgnored", { line })
+		vim.fn.matchaddpos("CloverIgnored", { line }, 10, -1, { window = window_id })
 	end
 
 	for _, match in ipairs(matches) do
-		vim.fn.matchaddpos(match.group, match.pos, match.priority)
+		vim.fn.matchaddpos(match.group, match.pos, match.priority, -1, { window = window_id })
 	end
 end
 

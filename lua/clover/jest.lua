@@ -1,7 +1,7 @@
 local highlight = require("clover").highlight
 local get_matches = require("clover").get_matches
 
-local function on_exit(exit_code, tempdir)
+local function on_exit(exit_code, tempdir, window_id)
 	if exit_code ~= 0 then
 		vim.api.nvim_err_writeln("Failed to get coverage")
 		return
@@ -39,12 +39,13 @@ local function on_exit(exit_code, tempdir)
 		end
 	end
 
-	highlight(matches)
+	highlight(matches, window_id)
 
 	vim.fn.delete(tempdir, "rf")
 end
 
 local function up()
+	local window_id = vim.fn.win_getid()
 	local filename = vim.fn.expand("%")
 	local tempdir = vim.fn.tempname()
 
@@ -63,7 +64,7 @@ local function up()
 	}
 	local job_opts = {
 		on_exit = function(_, exit_code, _)
-			on_exit(exit_code, tempdir)
+			on_exit(exit_code, tempdir, window_id)
 		end,
 	}
 
