@@ -17,7 +17,7 @@ local function highlight(matches, window_id)
 	vim.fn.clearmatches(window_id)
 	vim.fn.matchadd("Whitespace", [[\s\+]], 20, -1, { window = window_id })
 
-	for line = 1, vim.fn.line("$"), 1 do
+	for line = 1, vim.fn.line("$", window_id), 1 do
 		vim.fn.matchaddpos("CloverIgnored", { line }, 10, -1, { window = window_id })
 	end
 
@@ -27,8 +27,8 @@ local function highlight(matches, window_id)
 end
 
 --- line_length returns the number of display cells a line occupies.
-local function line_length(line_number)
-	return vim.fn.strwidth(vim.fn.getline(line_number))
+local function line_length(line_number, window_id)
+	return vim.fn.strwidth(vim.fn.getbufline(vim.fn.winbufnr(window_id), line_number)[1])
 end
 
 -- match_info returns a group and priority suitable for matchaddpos.
@@ -70,8 +70,9 @@ end
 -- @param end_line the last line to highlight
 -- @param end_col the optional column of the last line to highlight
 -- @param covered whether the match is covered by tests
+-- @param window_id the id of the window
 -- @return an array of tables each with a group, pos, and priority
-local function get_matches(start_line, start_col, end_line, end_col, covered)
+local function get_matches(start_line, start_col, end_line, end_col, covered, window_id)
 	local info = match_info(covered)
 
 	local function new_match(pos)
@@ -83,7 +84,7 @@ local function get_matches(start_line, start_col, end_line, end_col, covered)
 	end
 
 	start_col = start_col or 1
-	end_col = end_col or line_length(end_line)
+	end_col = end_col or line_length(end_line, window_id)
 
 	if start_line == end_line then
 		local pos = { { start_line, start_col, end_col - start_col + 1 } }
@@ -92,7 +93,7 @@ local function get_matches(start_line, start_col, end_line, end_col, covered)
 
 	local matches = {}
 
-	local first_length = line_length(start_line) - start_col + 1
+	local first_length = line_length(start_line, window_id) - start_col + 1
 	local first_pos = { { start_line, start_col, first_length } }
 	table.insert(matches, new_match(first_pos))
 

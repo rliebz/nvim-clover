@@ -16,7 +16,7 @@ local function parse_line(line)
 	}
 end
 
-local function on_exit(exit_code, coverfile, window_id)
+local function on_exit(exit_code, filename, coverfile, window_id)
 	if exit_code ~= 0 then
 		vim.api.nvim_err_writeln("Failed to get coverage")
 		return
@@ -27,8 +27,6 @@ local function on_exit(exit_code, coverfile, window_id)
 		return
 	end
 
-	local filename = vim.fn.expand("%:t")
-
 	local matches = {}
 
 	local lines = vim.fn.readfile(coverfile)
@@ -37,7 +35,7 @@ local function on_exit(exit_code, coverfile, window_id)
 
 		if filename == vim.fn.fnamemodify(cov.file, ":t") then
 			local statement_matches =
-			get_matches(cov.start_line, cov.start_col, cov.end_line, cov.end_col, cov.count > 0)
+			get_matches(cov.start_line, cov.start_col, cov.end_line, cov.end_col, cov.count > 0, window_id)
 
 			for _, match in ipairs(statement_matches) do
 				table.insert(matches, match)
@@ -51,13 +49,14 @@ local function on_exit(exit_code, coverfile, window_id)
 end
 
 local function up()
+	local filename = vim.fn.expand("%:t")
 	local window_id = vim.fn.win_getid()
 	local tempname = vim.fn.tempname()
 
 	local job_opts = {
 		cwd = vim.fn.expand("%:h"),
 		on_exit = function(_, exit_code, _)
-			return on_exit(exit_code, tempname, window_id)
+			return on_exit(exit_code, filename, tempname, window_id)
 		end,
 	}
 

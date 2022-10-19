@@ -1,13 +1,12 @@
 local highlight = require("clover").highlight
 local get_match_for_line = require("clover").get_match_for_line
 
-local function on_exit(exit_code, dirname, window_id)
+local function on_exit(exit_code, dirname, filename, window_id)
 	if exit_code ~= 0 then
 		vim.api.nvim_err_writeln("Failed to get coverage")
 		return
 	end
 
-	local filename = vim.fn.expand("%") -- TODO: This is brittle/janky
 	local coverfile = dirname .. "/" .. filename:gsub("/", "_") .. ",cover"
 
 	if not vim.fn.filereadable(coverfile) then
@@ -39,6 +38,7 @@ local function up()
 	local window_id = vim.fn.win_getid()
 	local package = vim.fn.expand("%:h") -- TODO: This is brittle/janky
 	local tempdir = vim.fn.tempname()
+	local filename = vim.fn.expand("%") -- TODO: This is brittle/janky
 
 	-- coverage.py is incredibly similar, but does not seem to be able to
 	-- properly run an annotation report for pytest. But we can probably re-use
@@ -53,7 +53,7 @@ local function up()
 
 	local job_opts = {
 		on_exit = function(_, exit_code, _)
-			return on_exit(exit_code, tempdir, window_id)
+			return on_exit(exit_code, tempdir, filename, window_id)
 		end,
 	}
 
