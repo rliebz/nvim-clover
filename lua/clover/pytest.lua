@@ -29,7 +29,7 @@ local function on_exit(exit_code, dirname, filename, window_id)
 		end
 	end
 
-	highlight(matches, window_id)
+	highlight(window_id, matches)
 
 	vim.fn.delete(dirname, "rf")
 end

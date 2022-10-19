@@ -21,24 +21,23 @@ local function on_exit(exit_code, tempdir, filepath, window_id)
 	local matches = {}
 	for id, count in pairs(statement_counts) do
 		local cov = statement_map[id]
-
-		local statement_matches = get_matches(
-			cov.start.line,
+		local pos = {
+			start_line = cov.start.line,
 			-- Start column is zero-based
-			type(cov.start.column) == "number" and cov.start.column + 1 or nil,
-			cov["end"].line,
+			start_col = type(cov.start.column) == "number" and cov.start.column + 1 or nil,
+			end_line = cov["end"].line,
 			-- End column is also zero based, but non-inclusive
-			type(cov["end"].column) == "number" and cov["end"].column or nil,
-			count > 0,
-			window_id
-		)
+			end_col = type(cov["end"].column) == "number" and cov["end"].column or nil,
+		}
+
+		local statement_matches = get_matches(window_id, pos, count > 0)
 
 		for _, match in ipairs(statement_matches) do
 			table.insert(matches, match)
 		end
 	end
 
-	highlight(matches, window_id)
+	highlight(window_id, matches)
 
 	vim.fn.delete(tempdir, "rf")
 end

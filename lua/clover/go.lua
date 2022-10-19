@@ -34,8 +34,13 @@ local function on_exit(exit_code, filename, coverfile, window_id)
 		local cov = parse_line(line)
 
 		if filename == vim.fn.fnamemodify(cov.file, ":t") then
-			local statement_matches =
-			get_matches(cov.start_line, cov.start_col, cov.end_line, cov.end_col, cov.count > 0, window_id)
+			local pos = {
+				start_line = cov.start_line,
+				start_col = cov.start_col,
+				end_line = cov.end_line,
+				end_col = cov.end_col,
+			}
+			local statement_matches = get_matches(window_id, pos, cov.count > 0)
 
 			for _, match in ipairs(statement_matches) do
 				table.insert(matches, match)
@@ -43,7 +48,7 @@ local function on_exit(exit_code, filename, coverfile, window_id)
 		end
 	end
 
-	highlight(matches, window_id)
+	highlight(window_id, matches)
 
 	vim.fn.delete(coverfile)
 end
