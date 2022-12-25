@@ -1,5 +1,5 @@
-local highlight = require("clover").highlight
-local get_matches = require("clover").get_matches
+local highlight = require("clover.util").highlight
+local get_matches = require("clover.util").get_matches
 
 local function parse_line(line)
 	local pat = [[\([^:]\+\):\(\d\+\)\.\(\d\+\),\(\d\+\)\.\(\d\+\)\s\(\d\+\)\s\(\d\+\)]]

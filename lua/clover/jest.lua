@@ -1,5 +1,5 @@
-local highlight = require("clover").highlight
-local get_matches = require("clover").get_matches
+local highlight = require("clover.util").highlight
+local get_matches = require("clover.util").get_matches
 
 local function on_exit(exit_code, tempdir, filepath, window_id)
 	if exit_code ~= 0 then
