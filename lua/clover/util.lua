@@ -1,3 +1,5 @@
+local M = {}
+
 --- highlight produces highlights in a document based on matches passed. This
 -- will typically be returned from calling get_matches.
 --
@@ -6,7 +8,7 @@
 -- @param matches.group the appropriate highlight group
 -- @param matches.pos the positions as documented in matchaddpos
 -- @see get_matches
-local function highlight(window_id, matches)
+function M.highlight(window_id, matches)
 	vim.api.nvim_create_augroup("clover_cleanup", {})
 	vim.api.nvim_create_autocmd("BufWinLeave", {
 		buffer = 0,
@@ -14,12 +16,6 @@ local function highlight(window_id, matches)
 			require("clover").down()
 		end,
 	})
-	vim.cmd([[
-	augroup clover_cleanup
-		autocmd! * <buffer>
-		autocmd BufWinLeave <buffer> call clover#Down()
-	augroup end
-	]])
 
 	vim.fn.clearmatches(window_id)
 	vim.fn.matchadd("Whitespace", [[\s\+]], 20, -1, { window = window_id })
@@ -63,7 +59,7 @@ end
 -- @param line_number the line number to highlight
 -- @param covered whether the line is covered by tests
 -- @return a table with group, pos, and priority
-local function get_match_for_line(line_number, covered)
+function M.get_match_for_line(line_number, covered)
 	local info = match_info(covered)
 	info.pos = { line_number }
 	return info
@@ -80,7 +76,7 @@ end
 -- @param pos.end_col the optional column of the last line to highlight
 -- @param covered whether the match is covered by tests
 -- @return an array of tables each with a group, pos, and priority
-local function get_matches(window_id, pos, covered)
+function M.get_matches(window_id, pos, covered)
 	local info = match_info(covered)
 
 	local function new_match(match_pos)
@@ -119,8 +115,4 @@ local function get_matches(window_id, pos, covered)
 	return matches
 end
 
-return {
-	get_matches = get_matches,
-	get_match_for_line = get_match_for_line,
-	highlight = highlight,
-}
+return M

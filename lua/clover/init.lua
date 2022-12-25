@@ -1,9 +1,6 @@
--- TODO: You're better than this.
-vim.cmd([[
-highlight default CloverCovered guifg=Green ctermfg=Green
-highlight default CloverUncovered guifg=Red ctermfg=Red
-highlight default CloverIgnored guifg=Gray ctermfg=Gray
-]])
+vim.api.nvim_set_hl(0, "CloverCovered", { fg = "Green", default = true })
+vim.api.nvim_set_hl(0, "CloverUncovered", { fg = "Red", default = true })
+vim.api.nvim_set_hl(0, "CloverIgnored", { fg = "Gray", default = true })
 
 local toggled = false
 
