@@ -2,7 +2,7 @@ vim.api.nvim_set_hl(0, "CloverCovered", { fg = "Green", default = true })
 vim.api.nvim_set_hl(0, "CloverUncovered", { fg = "Red", default = true })
 vim.api.nvim_set_hl(0, "CloverIgnored", { fg = "Gray", default = true })
 
-local toggled = false
+local toggled = {}
 
 local M = {}
 
@@ -33,17 +33,17 @@ function M.up()
 		vim.notify("Unsupported file type: " .. vim.o.filetype, vim.log.ERROR)
 	end
 
-	toggled = true
+	toggled[vim.fn.win_getid()] = true
 end
 
 function M.down()
 	vim.fn.clearmatches()
 	vim.api.nvim_clear_autocmds({ buffer = 0, group = "clover_cleanup" })
-	toggled = false
+	toggled[vim.fn.win_getid()] = false
 end
 
 function M.toggle()
-	if toggled then
+	if toggled[vim.fn.win_getid()] then
 		M.down()
 	else
 		M.up()
