@@ -1,0 +1,53 @@
+*clover.txt*    nvim-clover
+*nvim-clover*
+
+=============================================================================
+Introduction                                            *clover-introduction*
+
+A neovim plugin to highlight test coverage inline.
+
+Requires neovim >= 0.8.1.
+
+Language/Tool Support                                        *clover-support*~
+
+Clover aims to be a generic coverage tool, but has limited language and tooling
+support. Feel free to open a pull request or issue as needed.
+
+| Runner  | Requirements           | Languages                        |
+| ------- | ---------------------- | -------------------------------- |
+| Go Test | `go`                     | Go                               |
+| Jest    | `npx`, `jest`              | Javascript, JSX, Typescript, TSX |
+| Pytest  | `pytest`, `pytest-cov`     | Python                           |
+
+Configuration from vim-test (https://github.com/vim-test/vim-test) is read and
+attempted to be used if configured.
+
+=============================================================================
+Commands                                                    *clover-commands*
+
+                                                           *clover-:CloverUp*
+:CloverUp       Run tests and apply coverage to the current window.
+
+                                                         *clover-:CloverDown*
+:CloverDown     Turn off coverage for the current window.
+
+                                                       *clover-:CloverToggle*
+:CloverToggle   Toggle coverage for the current window.
+
+
+=============================================================================
+Highlight Groups                                                  *clover-hl*
+
+The following highlight groups are available:
+
+                                                    *clover-hl-CloverCovered*
+CloverCovered       Code that is covered by tests
+
+                                                  *clover-hl-CloverUncovered*
+CloverUncovered     Code that is not covered by tests
+
+                                                    *clover-hl-CloverIgnored*
+CloverIgnored       Code that is ignored by test coverage tools
+
+
+ vim:tw=78:et:ft=help:norl:
