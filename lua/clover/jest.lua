@@ -8,6 +8,10 @@ local function on_exit(exit_code, tempdir, filepath, window_id)
 	end
 
 	local json = vim.fn.json_decode(vim.fn.readfile(tempdir .. "/coverage-final.json"))
+	if not json then
+		vim.api.nvim_err_writeln("Coverage report not found in tempdir: " .. tempdir)
+		return
+	end
 
 	local file_report = json[filepath]
 	if not file_report then

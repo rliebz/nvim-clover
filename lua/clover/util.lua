@@ -21,7 +21,7 @@ function M.highlight(window_id, matches)
 	vim.fn.matchadd("Whitespace", [[\s\+]], 20, -1, { window = window_id })
 
 	for line = 1, vim.fn.line("$", window_id), 1 do
-		vim.fn.matchaddpos("CloverIgnored", { line }, 10, -1, { window = window_id })
+		vim.fn.matchaddpos("CloverIgnored", line, 10, -1, { window = window_id })
 	end
 
 	for _, match in ipairs(matches) do
