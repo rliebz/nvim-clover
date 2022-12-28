@@ -28,11 +28,11 @@ use("rliebz/nvim-clover")
 Clover aims to be a generic coverage tool, but has limited language and tooling
 support. Feel free to open a pull request or issue as needed.
 
-| Runner  | Requirements           | Languages                        |
-| ------- | ---------------------- | -------------------------------- |
-| Go Test | `go`                   | Go                               |
-| Jest    | `npx`, `jest`          | Javascript, JSX, Typescript, TSX |
-| Pytest  | `pytest`, `pytest-cov` | Python                           |
+| Runner  | Requirements            | Languages                        |
+| ------- | ----------------------- | -------------------------------- |
+| Go Test | `go`                    | Go                               |
+| Jest    | `npx`, `jest`           | Javascript, JSX, Typescript, TSX |
+| Pytest  | `pytest`, `coverage.py` | Python                           |
 
 Configuration from [vim-test](https://github.com/vim-test/vim-test) is read and
 attempted to be used if configured.
