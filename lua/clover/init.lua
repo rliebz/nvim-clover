@@ -38,7 +38,10 @@ end
 
 function M.down()
 	vim.fn.clearmatches()
-	vim.api.nvim_clear_autocmds({ buffer = 0, group = "clover_cleanup" })
+	vim.api.nvim_clear_autocmds({
+		buffer = 0,
+		group = require("clover.cleanup").augroup,
+	})
 	toggled[vim.fn.win_getid()] = false
 end
 

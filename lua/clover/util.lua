@@ -9,9 +9,9 @@ local M = {}
 -- @param matches.pos the positions as documented in matchaddpos
 -- @see get_matches
 function M.highlight(window_id, matches)
-	vim.api.nvim_create_augroup("clover_cleanup", {})
 	vim.api.nvim_create_autocmd("BufWinLeave", {
 		buffer = 0,
+		group = require("clover.cleanup").augroup,
 		callback = function()
 			require("clover").down()
 		end,
