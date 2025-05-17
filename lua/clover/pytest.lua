@@ -11,20 +11,20 @@ local function run_coverage(filename, datafile, coverfile, window_id)
 		coverfile,
 	})
 	if vim.v.shell_error ~= 0 then
-		vim.api.nvim_err_writeln("failed to generate JSON coverage report:")
-		vim.api.nvim_err_writeln(report_output)
+		vim.notify("failed to generate JSON coverage report:", vim.log.levels.ERROR)
+		vim.notify(report_output, vim.log.levels.ERROR)
 		return
 	end
 
 	local json = vim.fn.json_decode(vim.fn.readfile(coverfile))
 	if not json then
-		vim.api.nvim_err_writeln("Coverage report not successfully generated")
+		vim.notify("Coverage report not successfully generated", vim.log.levels.ERROR)
 		return
 	end
 
 	local file_report = json["files"][filename]
 	if not file_report then
-		vim.api.nvim_err_writeln("Coverage not available for file: " .. filename)
+		vim.notify("Coverage not available for file: " .. filename, vim.log.levels.ERROR)
 		return
 	end
 
@@ -44,7 +44,7 @@ end
 
 local function on_exit(exit_code, filename, datafile, window_id)
 	if exit_code ~= 0 then
-		vim.api.nvim_err_writeln("Failed to get coverage")
+		vim.notify("Failed to get coverage", vim.log.levels.ERROR)
 		return
 	end
 

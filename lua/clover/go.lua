@@ -18,12 +18,12 @@ end
 
 local function on_exit(exit_code, filename, coverfile, window_id)
 	if exit_code ~= 0 then
-		vim.api.nvim_err_writeln("Failed to get coverage")
+		vim.notify("Failed to get coverage", vim.log.levels.ERROR)
 		return
 	end
 
 	if not vim.fn.filereadable(coverfile) then
-		vim.api.nvim_err_writeln("Failed to read coverfile: " .. coverfile)
+		vim.notify("Failed to read coverfile: " .. coverfile, vim.log.levels.ERROR)
 		return
 	end
 

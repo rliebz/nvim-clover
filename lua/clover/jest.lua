@@ -3,19 +3,19 @@ local get_matches = require("clover.util").get_matches
 
 local function on_exit(exit_code, tempdir, filepath, window_id)
 	if exit_code ~= 0 then
-		vim.api.nvim_err_writeln("Failed to get coverage")
+		vim.notify("Failed to get coverage", vim.log.levels.ERROR)
 		return
 	end
 
 	local json = vim.fn.json_decode(vim.fn.readfile(tempdir .. "/coverage-final.json"))
 	if not json then
-		vim.api.nvim_err_writeln("Coverage report not found in tempdir: " .. tempdir)
+		vim.notify("Coverage report not found in tempdir: " .. tempdir, vim.log.levels.ERROR)
 		return
 	end
 
 	local file_report = json[filepath]
 	if not file_report then
-		vim.api.nvim_err_writeln("Coverage not available for file: " .. filepath)
+		vim.notify("Coverage not available for file: " .. filepath, vim.log.levels.ERROR)
 		return
 	end
 
