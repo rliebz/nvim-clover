@@ -33,20 +33,22 @@ function M.up()
 		vim.notify("Unsupported file type: " .. vim.o.filetype, vim.log.ERROR)
 	end
 
-	toggled[vim.fn.win_getid()] = true
+	toggled[vim.api.nvim_get_current_buf()] = true
 end
 
 function M.down()
-	vim.fn.clearmatches()
+	local buf = vim.api.nvim_get_current_buf()
+
+	vim.api.nvim_buf_clear_namespace(buf, require("clover.util").ns_id, 0, -1)
 	vim.api.nvim_clear_autocmds({
 		buffer = 0,
 		group = require("clover.cleanup").augroup,
 	})
-	toggled[vim.fn.win_getid()] = false
+	toggled[buf] = false
 end
 
 function M.toggle()
-	if toggled[vim.fn.win_getid()] then
+	if toggled[vim.api.nvim_get_current_buf()] then
 		M.down()
 	else
 		M.up()

@@ -1,7 +1,7 @@
 local highlight = require("clover.util").highlight
-local get_matches = require("clover.util").get_matches
+local get_match = require("clover.util").get_match
 
-local function on_exit(exit_code, tempdir, filepath, window_id)
+local function on_exit(exit_code, tempdir, filepath, buf)
 	if exit_code ~= 0 then
 		vim.notify("Failed to get coverage", vim.log.levels.ERROR)
 		return
@@ -26,29 +26,23 @@ local function on_exit(exit_code, tempdir, filepath, window_id)
 	for id, count in pairs(statement_counts) do
 		local cov = statement_map[id]
 		local pos = {
-			start_line = cov.start.line,
-			-- Start column is zero-based
-			start_col = type(cov.start.column) == "number" and cov.start.column + 1 or nil,
-			end_line = cov["end"].line,
-			-- End column is also zero based, but non-inclusive
+			start_line = cov.start.line - 1,
+			start_col = type(cov.start.column) == "number" and cov.start.column or nil,
+			end_line = cov["end"].line - 1,
 			end_col = type(cov["end"].column) == "number" and cov["end"].column or nil,
 		}
 
-		local statement_matches = get_matches(window_id, pos, count > 0)
-
-		for _, match in ipairs(statement_matches) do
-			table.insert(matches, match)
-		end
+		table.insert(matches, get_match(pos, count > 0))
 	end
 
-	highlight(window_id, matches)
+	highlight(buf, matches)
 
 	vim.fn.delete(tempdir, "rf")
 end
 
 local function up()
-	local window_id = vim.fn.win_getid()
-	local filename = vim.fn.expand("%")
+	local buf = vim.api.nvim_get_current_buf()
+	local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":.")
 	local filepath = vim.fn.expand("%:p")
 	local tempdir = vim.fn.tempname()
 
@@ -67,7 +61,7 @@ local function up()
 	}
 	local job_opts = {
 		on_exit = function(_, exit_code, _)
-			on_exit(exit_code, tempdir, filepath, window_id)
+			on_exit(exit_code, tempdir, filepath, buf)
 		end,
 	}
 

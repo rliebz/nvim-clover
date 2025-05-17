@@ -1,5 +1,5 @@
 local highlight = require("clover.util").highlight
-local get_matches = require("clover.util").get_matches
+local get_match = require("clover.util").get_match
 
 local function parse_line(line)
 	local pat = [[\([^:]\+\):\(\d\+\)\.\(\d\+\),\(\d\+\)\.\(\d\+\)\s\(\d\+\)\s\(\d\+\)]]
@@ -16,7 +16,7 @@ local function parse_line(line)
 	}
 end
 
-local function on_exit(exit_code, filename, coverfile, window_id)
+local function on_exit(exit_code, filename, coverfile, buf)
 	if exit_code ~= 0 then
 		vim.notify("Failed to get coverage", vim.log.levels.ERROR)
 		return
@@ -35,33 +35,30 @@ local function on_exit(exit_code, filename, coverfile, window_id)
 
 		if filename == vim.fn.fnamemodify(cov.file, ":t") then
 			local pos = {
-				start_line = cov.start_line,
-				start_col = cov.start_col,
-				end_line = cov.end_line,
-				end_col = cov.end_col,
+				start_line = cov.start_line - 1,
+				start_col = cov.start_col - 1,
+				end_line = cov.end_line - 1,
+				end_col = cov.end_col - 1,
 			}
-			local statement_matches = get_matches(window_id, pos, cov.count > 0)
 
-			for _, match in ipairs(statement_matches) do
-				table.insert(matches, match)
-			end
+			table.insert(matches, get_match(pos, cov.count > 0))
 		end
 	end
 
-	highlight(window_id, matches)
+	highlight(buf, matches)
 
 	vim.fn.delete(coverfile)
 end
 
 local function up()
 	local filename = vim.fn.expand("%:t")
-	local window_id = vim.fn.win_getid()
+	local buf = vim.api.nvim_get_current_buf()
 	local tempname = vim.fn.tempname()
 
 	local job_opts = {
 		cwd = vim.fn.expand("%:h"),
 		on_exit = function(_, exit_code, _)
-			return on_exit(exit_code, filename, tempname, window_id)
+			return on_exit(exit_code, filename, tempname, buf)
 		end,
 	}
 

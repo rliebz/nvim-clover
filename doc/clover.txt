@@ -26,13 +26,13 @@ attempted to be used if configured.
 Commands                                                    *clover-commands*
 
                                                            *clover-:CloverUp*
-:CloverUp       Run tests and apply coverage to the current window.
+:CloverUp       Run tests and apply coverage to the current buffer.
 
                                                          *clover-:CloverDown*
-:CloverDown     Turn off coverage for the current window.
+:CloverDown     Turn off coverage for the current buffer.
 
                                                        *clover-:CloverToggle*
-:CloverToggle   Toggle coverage for the current window.
+:CloverToggle   Toggle coverage for the current buffer.
 
 
 =============================================================================

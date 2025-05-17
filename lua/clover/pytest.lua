@@ -1,7 +1,7 @@
 local highlight = require("clover.util").highlight
 local get_match_for_line = require("clover.util").get_match_for_line
 
-local function run_coverage(filename, datafile, coverfile, window_id)
+local function run_coverage(filename, datafile, coverfile, buf)
 	local report_output = vim.fn.system({
 		"coverage",
 		"json",
@@ -31,32 +31,32 @@ local function run_coverage(filename, datafile, coverfile, window_id)
 	local matches = {}
 
 	for _, line in ipairs(file_report["executed_lines"]) do
-		local match = get_match_for_line(line, true)
+		local match = get_match_for_line(buf, line - 1, true)
 		table.insert(matches, match)
 	end
 	for _, line in ipairs(file_report["missing_lines"]) do
-		local match = get_match_for_line(line, false)
+		local match = get_match_for_line(buf, line - 1, false)
 		table.insert(matches, match)
 	end
 
-	highlight(window_id, matches)
+	highlight(buf, matches)
 end
 
-local function on_exit(exit_code, filename, datafile, window_id)
+local function on_exit(exit_code, filename, datafile, buf)
 	if exit_code ~= 0 then
 		vim.notify("Failed to get coverage", vim.log.levels.ERROR)
 		return
 	end
 
 	local coverfile = vim.fn.tempname()
-	run_coverage(filename, datafile, coverfile, window_id)
+	run_coverage(filename, datafile, coverfile, buf)
 	vim.fn.delete(coverfile, "rf")
 end
 
 local function up()
-	local window_id = vim.fn.win_getid()
+	local buf = vim.api.nvim_get_current_buf()
 	local datafile = vim.fn.tempname()
-	local filename = vim.fn.expand("%")
+	local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":.")
 	local package = vim.fn.expand("%:p:h")
 
 	-- coverage.py is incredibly similar, but does not seem to be able to
@@ -76,7 +76,7 @@ local function up()
 
 	local job_opts = {
 		on_exit = function(_, exit_code, _)
-			return on_exit(exit_code, filename, datafile, window_id)
+			return on_exit(exit_code, filename, datafile, buf)
 		end,
 	}
 
